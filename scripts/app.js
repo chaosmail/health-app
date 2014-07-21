@@ -17,7 +17,7 @@ app.factory('Geocoder', function() {
 });
 
 app.factory('Results', function($resource) {
-  return $resource('/results.json', {  });
+  return $resource('results.json', {  });
 });
 
 app.controller('DataCtrl', ['$scope', '$filter', '$timeout', 'Results', 'Geocoder', function($scope, $filter, $timeout, Results, Geocoder) {

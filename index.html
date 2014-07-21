@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html ng-app="HealthApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Alternative Interface for health.ch</title>
+
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+
+    <script src='http://maps.googleapis.com/maps/api/js?sensor=false'></script>
+    <script src='bower_components/lodash/dist/lodash.underscore.min.js'></script>
+    <script src='bower_components/angular-google-maps/dist/angular-google-maps.min.js'></script>
+
+    <script src="scripts/app.js"></script>
+
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+
+    <style>
+        .angular-google-map-container {
+            height: 400px;
+        }
+
+        .container tr.highlighted td {
+            background-color: rgba(255, 227, 13, 0.49) !important;
+        }
+
+        /* you can also define the transition style
+           on the base class as well (.anim) */
+        .anim.ng-enter,
+        .anim.ng-leave {
+          -webkit-transition:0.5s linear all;
+          transition:0.5s linear all;
+        }
+
+        .anim.ng-enter,
+        .anim.ng-leave.ng-leave-active {
+          opacity:0;
+        }
+        .anim.ng-leave,
+        .anim.ng-enter.ng-enter-active {
+          opacity:1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" ng-controller="DataCtrl">
+
+    <h1>Alternative Interface for health.ch</h1>
+
+    <blockquote>
+        Disclaimer: All the data displayed on this website belongs to health.ch.
+        This is a private suggestion of an improvement of the directory health.ch.
+    </blockquote>
+
+    <form class="form-inline" role="form">
+
+        <div class="form-group">
+            <select ng-model="cat_lvl_1" ng-options="item.name for item in items"  class="form-control"></select>
+            <select ng-model="cat_lvl_2" ng-options="item.name for item in cat_lvl_1.ch"  class="form-control"></select>
+            <select ng-model="search.city" ng-options="c for c in cities"  class="form-control"></select>
+        </div>
+
+        <div class="form-group has-feedback">
+            <input class="form-control" type="text" placeholder="Type Name .." ng-model="search.name">
+            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+        </div>
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Fax</th>
+        </thead>
+        <tbody>
+            <tr class="anim" ng-repeat="item in cat_lvl_2.ch | filter:search:strict track by item.id " id="item-{{ item.id }}" ng-class="{highlighted: item.highlighted}">
+                <td><b>{{ item.name }}</b></td>
+                <td>{{ item.address }}</td>
+                <td>{{ item.phone }}</td>
+                <td><a href="mailto:{{ item.email }}">{{ item.email }}</a></td>
+                <td>{{ item.fax }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <google-map center="map.center" zoom="map.zoom" refresh="map.refresh" draggable="true">
+        <markers models="markers" coords="'pos'" labelContent="'name'" click="'onClick'"></markers>
+    </google-map>
+</div>
+
+</body>
+</html>

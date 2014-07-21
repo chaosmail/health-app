@@ -73,6 +73,7 @@ for d in dirs:
         cat_sub_url = parse_link( category.get('href') )
         cat_slug = os.path.basename( os.path.dirname(cat_sub_url) )
         cat_children = []
+        entry_id = 1
 
         # Dont consider external Links
         if re.match(r"^http://", cat_sub_url):
@@ -99,12 +100,16 @@ for d in dirs:
 
                 cells = entry.next_sibling.next_sibling.contents
 
-                address = str(cells[0].contents[0]).replace(u"\u00A0", " ")
+                full_address = str(cells[0].contents[0]).replace(u"\u00A0", " ")
+                address = full_address[:full_address.find(",")]
+                city = full_address[full_address.find(",")+2:]
                 email = str(cells[0].contents[3].string).replace(u"\u00A0", " ") if len(cells[0].contents) > 3 else ""
                 phone = parse_phone( str(cells[1].contents[0]).replace(u"\u00A0", " ") )
-                fax = parse_fax( str(cells[1].contents[2]).replace(u"\u00A0", " ") if len(cells[1].contents) > 2 else "")
+                fax = parse_fax( str(cells[1].contents[2]).replace(u"\u00A0", " ") if len(cells[1].contents) > 2 and cells[1].contents[2] is not "<br/>" else "")
 
-                cat_children.append({'name': en_name, 'sub_url': en_sub_url, 'address': address, 'email': email, 'phone': phone, 'fax': fax})
+                cat_children.append({'id': entry_id, 'name': en_name, 'sub_url': en_sub_url, 'address': address, 'city': city, 'email': email, 'phone': phone, 'fax': fax})
+
+                entry_id += 1
 
         d["ch"].append({'name': cat_name, 'sub_url': cat_sub_url, 'ch':  cat_children})
 

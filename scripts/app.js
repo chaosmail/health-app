@@ -101,7 +101,7 @@ app.controller('DataCtrl', ['$scope', '$filter', '$timeout', 'Results', 'Geocode
 
         angular.forEach($scope.cat_lvl_2.ch, function(item) {
 
-            cities.push(item.city);
+            cities.push(item.city.substr(5));
         });
 
         $scope.cities = cities.sort().filter(function(el,i,a){return i==a.indexOf(el);});
